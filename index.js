@@ -162,7 +162,32 @@ app.get('/testGiropay', (req, res) => {
         });
 });
 
-//payments data
+//iDEAL
+
+app.get('/testideal', async (req, res) => {
+    try {
+        const paymentsResponse = await checkout.payments({
+            amount: { currency: "EUR", value: 1000 },
+            paymentMethod: {
+                type: 'ideal',
+                issuer: '1121' //replace with a valid issuer
+            },
+            reference: "YOUR_ORDER_NUMBER",
+            merchantAccount: config.merchantAccount,
+            returnUrl: "http://localhost:3000/handleIdealRedirect"
+        });
+
+        // Send the response to client
+        res.send(paymentsResponse);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ error: error.message });
+    }
+});
+
+  
+
+//payments data for giropay
 
 app.post('/paymentsData', (req, res) => {
     paymentDataStore = req.body.paymentData;
@@ -198,9 +223,50 @@ app.get('/handleRedirect', (req, res) => {
     });
 });
 
+app.get('/handleIdealRedirect', async (req, res) => {
+    try {
+        // Extract redirectResult from the request
+        const { redirectResult } = req.query;
+
+        // Make a POST /payments/details request
+        const paymentDetails = await checkout.paymentsDetails({
+            details: {
+                redirectResult
+            }
+        });
+
+        // Log the paymentDetails response
+        console.log('Payment details response:\n', paymentDetails);
+
+        const { resultCode } = paymentDetails;
+
+        let message;
+        switch (resultCode) {
+            case 'Authorised':
+                message = 'Payment was successful';
+                break;
+            case 'Refused':
+                message = 'Payment was refused';
+                break;
+            case 'Error':
+                message = 'An error occurred during payment';
+                break;
+            default:
+                message = 'Payment result is unknown';
+                break;
+        }
+
+        res.send(message);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ error: error.message });
+    }
+});
+
 
 app.get('/', (req, res) => {
-    res.send('Hello World!');
+    res.send('It works!');
 });
 
 

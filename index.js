@@ -1,83 +1,3 @@
-/*
-const {Client, Config, CheckoutAPI} = require('@adyen/api-library');
-const config = new Config();
-// Set your YOUR_API_KEY with the API key from the Customer Area.
-config.apiKey = 'AQEyhmfxKonIYxZGw0m/n3Q5qf3VaY9UCJ14XWZE03G/k2NFikzVGEiYj+4vtN01BchqAcwQwV1bDb7kfNy1WIxIIkxg Bw==-JtQ5H0iXtu8rqQMD6iAb33gf2qZeGKGhrMpyQAt9zsw=-3wAkV)*$kP%bCcSf';
-config.merchantAccount = 'AdyenRecruitmentCOM';
-const client = new Client({ config });
-client.setEnvironment("TEST");
-const checkout = new CheckoutAPI(client);
-checkout.payments({
-    merchantAccount: config.merchantAccount,
-    paymentMethod: {
-        type: 'scheme',
-        encryptedCardNumber: "test_4111111111111111",
-        encryptedExpiryMonth: "test_03",
-        encryptedExpiryYear: "test_2030",
-        encryptedSecurityCode: "test_737"
-    },
-    amount: { currency: "EUR", value: 1000, },
-    reference: "orderNo1",
-    returnUrl: "https://your-company.com/checkout?shopperOrder=12xy.."
-}).then(res => console.log(res)) // Logs the response to the console
-.catch(err => console.log(err)); // Logs any error to the console
-*/
-
-/* CARD + GIROPY WITH NO REDIRECT 
-const { Client, Config, CheckoutAPI } = require('@adyen/api-library');
-
-// Configure the client
-const config = new Config();
-config.apiKey = 'AQEyhmfxKonIYxZGw0m/n3Q5qf3VaY9UCJ14XWZE03G/k2NFikzVGEiYj+4vtN01BchqAcwQwV1bDb7kfNy1WIxIIkxg Bw==-JtQ5H0iXtu8rqQMD6iAb33gf2qZeGKGhrMpyQAt9zsw=-3wAkV)*$kP%bCcSf'; // replace with your actual API key
-config.merchantAccount = 'AdyenRecruitmentCOM'; // replace with your actual merchant account
-
-const client = new Client({ config });
-client.setEnvironment("TEST");
-
-// Initialize the Checkout API
-const checkout = new CheckoutAPI(client);
-
-// Define test cases for different payment methods
-function testScheme() {
-    return checkout.payments({
-        merchantAccount: config.merchantAccount,
-        paymentMethod: {
-            type: 'scheme',
-            encryptedCardNumber: "test_4111111111111111",
-            encryptedExpiryMonth: "test_03",
-            encryptedExpiryYear: "test_2030",
-            encryptedSecurityCode: "test_737"
-        },
-        amount: { currency: "EUR", value: 1000 },
-        reference: "orderNo1",
-        returnUrl: "https://your-company.com/checkout?shopperOrder=12xy.."
-    });
-}
-
-function testGiropay() {
-    return checkout.payments({
-        amount: { currency: "EUR", value: 1000 },
-        paymentMethod: {
-            type: 'giropay'
-        },
-        reference: "YOUR_ORDER_NUMBER",
-        merchantAccount: config.merchantAccount,
-        returnUrl: "adyencheckout://your.package.name"
-    });
-}
-
-// Run the test cases
-testScheme()
-    .then(res => console.log('Scheme test result:', res))
-    .catch(err => console.error('Scheme test error:', err));
-
-testGiropay()
-    .then(res => console.log('Giropay test result:', res))
-    .catch(err => console.error('Giropay test error:', err));
-
-END OF CARD + GIROPAY WIITH NO REDIRECT
-*/
-
 require('dotenv').config();
 const { Client, Config, CheckoutAPI } = require('@adyen/api-library');
 const express = require('express');
@@ -92,8 +12,8 @@ app.use(morgan('dev')); // logs requests
 const config = new Config();
 //const apiKey = process.env.API_KEY;
 //const merchantAccount = process.env.MERCHANT_ACCOUNT;
-config.apiKey = 'AQEyhmfxKonIYxZGw0m/n3Q5qf3VaY9UCJ14XWZE03G/k2NFikzVGEiYj+4vtN01BchqAcwQwV1bDb7kfNy1WIxIIkxg Bw==-JtQ5H0iXtu8rqQMD6iAb33gf2qZeGKGhrMpyQAt9zsw=-3wAkV)*$kP%bCcSf';
-config.merchantAccount = 'AdyenRecruitmentCOM';
+config.apiKey = process.env.API_KEY;
+config.merchantAccount = process.env.MERCHANT_ACCOUNT;
 
 const client = new Client({ config });
 client.setEnvironment("TEST");

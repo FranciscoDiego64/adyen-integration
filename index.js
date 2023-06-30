@@ -101,24 +101,55 @@ client.setEnvironment("TEST");
 // Initialize the Checkout API
 const checkout = new CheckoutAPI(client);
 
-// Define test cases for different payment methods
-function testScheme() {
-    return checkout.payments({
-        merchantAccount: config.merchantAccount,
-        paymentMethod: {
-            type: 'scheme',
-            encryptedCardNumber: "test_4111111111111111",
-            encryptedExpiryMonth: "test_03",
-            encryptedExpiryYear: "test_2030",
-            encryptedSecurityCode: "test_737"
-        },
-        amount: { currency: "EUR", value: 1000 },
-        reference: "orderNo1"
-    });
+// test cases for different payment methods
+
+//card 
+async function testScheme() {
+    try {
+        const paymentResponse = await checkout.payments({
+            merchantAccount: config.merchantAccount,
+            paymentMethod: {
+                type: 'scheme',
+                encryptedCardNumber: "test_4111111111111111",
+                encryptedExpiryMonth: "test_03",
+                encryptedExpiryYear: "test_2030",
+                encryptedSecurityCode: "test_737"
+            },
+            amount: { currency: "EUR", value: 1000 },
+            reference: "orderNo1"
+        });
+
+        // Extract the resultCode from the paymentResponse
+        const { resultCode, pspReference } = paymentResponse;
+
+        // Define a message based on the resultCode
+        let message;
+        switch (resultCode) {
+            case 'Authorised':
+                message = 'Payment was successful';
+                break;
+            case 'Refused':
+                message = 'Payment was refused';
+                break;
+            case 'Error':
+                message = 'An error occurred during payment';
+                break;
+            default:
+                message = 'Payment result is unknown';
+                break;
+        }
+
+        // Log the message and return it along with the pspReference
+        console.log(`Payment result: ${message}, pspReference: ${pspReference}`);
+        return ` ${message}, pspReference: ${pspReference}`;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
 }
 
-let paymentDataStore = {};  // To store the paymentData temporarily
 
+let paymentDataStore = {};  // To store the paymentData temporarily
 
 function testGiropay() {
     return checkout.payments({
@@ -138,17 +169,16 @@ function testGiropay() {
 }
 
 // Run the test cases when the API calls are made
-app.get('/testScheme', (req, res) => {
-    testScheme()
-        .then(result => {
-            console.log('Scheme test result:', result);
-            res.send(result);
-        })
-        .catch(err => {
-            console.error('Scheme test error:', err);
-            res.status(500).send(err);
-        });
+app.get('/testScheme', async (req, res) => {
+    try {
+        const result = await testScheme();
+        res.send(result);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ error: error.message });
+    }
 });
+
 
 app.get('/testGiropay', (req, res) => {
     testGiropay()

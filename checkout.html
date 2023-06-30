@@ -1,15 +1,32 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Checkout Page</title>
-</head>
 <body>
-    <h1>Checkout Page</h1>
 
-    <!-- Here's the DOM container where Drop-in will be rendered -->
-    <div id="dropin-container"></div>
+<h2>Payment Methods</h2>
+<div id="paymentMethods"></div>
 
-    <!-- Include your script here -->
-    <script src="index.js"></script>
+<script>
+fetch('/paymentmethods')
+  .then(response => response.json())
+  .then(data => {
+    const paymentMethods = data.paymentMethods;
+    const div = document.getElementById("paymentMethods");
+    paymentMethods.forEach((method) => {
+      const button = document.createElement("button");
+      button.innerHTML = method.name;
+      button.onclick = function() {
+        makePayment(method.type);
+      };
+      div.appendChild(button);
+    });
+  });
+
+function makePayment(type) {
+    // Here, make an AJAX request to the appropriate endpoint based on the payment type
+    // For example, if type is 'scheme', make a request to '/testscheme'
+    // You can use the 'fetch' function again to make this request
+}
+</script>
+
 </body>
 </html>

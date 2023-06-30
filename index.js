@@ -88,6 +88,26 @@ function testGiropay() {
     });
 }
 
+function getPaymentMethods() {
+    const paymentMethodsRequest = {
+        merchantAccount: config.merchantAccount
+    };
+    return checkout.paymentMethods(paymentMethodsRequest)
+        .then(res => res)
+        .catch(error => console.error(error));
+}
+
+app.get('/paymentmethods', async (req, res) => {
+    try {
+        const response = await getPaymentMethods();
+        res.json(response);
+    } catch (error) {
+        res.json({error: error.message});
+    }
+});
+
+
+
 // Run the test cases when the API calls are made
 app.get('/testScheme', async (req, res) => {
     try {

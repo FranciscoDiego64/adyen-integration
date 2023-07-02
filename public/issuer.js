@@ -14,7 +14,13 @@ document.getElementById('issuer-form').addEventListener('submit', function(e) {
     })
     .then(response => response.json())
     .then(data => {
-        window.location.href = data.url;
+        if (data.error) {
+            // If there's an error message in the response, display it
+            alert(data.error);
+        } else {
+            // If there's no error, redirect to the URL
+            window.location.href = data.url;
+        }
     })
     .catch(error => console.error('Error:', error));
 });

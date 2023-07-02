@@ -288,15 +288,10 @@ app.post('/testideal', async (req, res) => {
         }
     } catch (error) {
         console.error(error);
+        // Send the error message to the client
         res.status(500).send({ error: error.message });
     }
 });
-
-
-
-// Handle the redirect iDEAL
-// (... The rest of your code remains the same ...)
-
 
 // Handle the redirect iDEAL
 
@@ -467,8 +462,6 @@ app.get('/handleKlarnaRedirect', async (req, res) => {
     }
 });
 
-
-
 //Webpage routes
 
 app.get('/cart', (req, res) => {
@@ -491,7 +484,7 @@ app.get('/selectIssuer', (req, res) => {
     res.sendFile(path.join(__dirname, 'selectIssuer.html'));
 });
 
-
+/*
 app.post('/cardDetails', async (req, res) => {
     const { cardNumber, supportedBrands } = req.body;
 
@@ -516,6 +509,7 @@ app.post('/cardDetails', async (req, res) => {
         res.status(500).send({ error: error.message });
     }
 });
+*/
 
 
 

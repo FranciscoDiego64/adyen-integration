@@ -8,7 +8,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     paymentMethods.forEach(paymentMethod => {
         const listItem = document.createElement('li');
         listItem.innerText = paymentMethod.type;
-        listItem.classList.add('button'); // Add 'button' class
+        listItem.classList.add('list-group-item'); // Add 'list-group-item' class
+        listItem.classList.add('list-group-item-action'); // Add 'list-group-item-action' class
         listItem.addEventListener('click', () => {
             initiatePayment(paymentMethod.type);
         });

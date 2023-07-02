@@ -4,23 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shopping Cart</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <h1>Shopping Cart</h1>
+    <div class="container mt-4">
+        <h1>Shopping Cart</h1>
 
-    <div id="cart">
-        <div>
-            <h2>Blue T-shirt</h2>
-            <p>Price: 10 EUR</p>
+        <div id="cart">
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h2 class="card-title">Blue T-shirt</h2>
+                    <p class="card-text">Price: 10 EUR</p>
+                </div>
+            </div>
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h2 class="card-title">Black Jeans</h2>
+                    <p class="card-text">Price: 50 EUR</p>
+                </div>
+            </div>
         </div>
-        <div>
-            <h2>Black Jeans</h2>
-            <p>Price: 50 EUR</p>
-        </div>
+
+        <button class="btn btn-primary mt-4" onclick="window.location.href='/checkout'">Checkout</button>
     </div>
-
-    <button onclick="window.location.href='/checkout'">Checkout</button>
-
 
     <script src="checkout.js"></script>
 </body>

@@ -1,14 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Issuer</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+</head>
 <body>
-    <h2>Select your issuer</h2>
-    <form id="issuer-form">
-        <select id="issuer">
-            <option value="1121">Issuer 1121</option>
-            <option value="0909">Issuer 0909</option>
-        </select>
-        <button type="submit">Submit</button>
-    </form>
+    <div class="container mt-4">
+        <h2>Select your issuer</h2>
+        <form id="issuer-form">
+            <div class="form-group">
+                <select id="issuer" class="form-control">
+                    <option value="1121">Issuer 1121</option>
+                    <option value="0909">Issuer 0909</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
     <script src="issuer.js"></script>
 </body>
 </html>

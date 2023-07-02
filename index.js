@@ -62,11 +62,18 @@ async function testScheme() {
         const paymentResponse = await checkout.payments({
             merchantAccount: config.merchantAccount,
             paymentMethod: {
+                
                 type: 'scheme',
                 encryptedCardNumber: "test_4111111111111111",
                 encryptedExpiryMonth: "test_03",
                 encryptedExpiryYear: "test_2030",
                 encryptedSecurityCode: "test_737"
+                /* type: 'scheme',
+                cardNumber:'test_4111111111111111',
+                expiryMonth:'03',
+                expiryYear:'30',
+                cvc:'737',
+                holderName: 'S. Hopper' */
             },
             amount: { currency: "EUR", value: 1000 },
             reference: "orderNo1"
@@ -138,17 +145,23 @@ function testGiropay() {
 
 // run test case
 
-app.get('/testGiropay', (req, res) => {
-    testGiropay()
-        .then(result => {
-            console.log('Giropay test result:', result);
-            res.send(result);
-        })
-        .catch(err => {
-            console.error('Giropay test error:', err);
-            res.status(500).send(err);
-        });
+app.get('/testGiropay', async (req, res) => {
+    try {
+        const paymentsResponse = await testGiropay();
+
+        // Check if there's an action object
+        if (paymentsResponse.action) {
+            // Redirect the customer
+            res.redirect(paymentsResponse.action.url);
+        } else {
+            res.send(paymentsResponse);
+        }
+    } catch (error) {
+        console.error('Giropay test error:', error);
+        res.status(500).send({ error: error.message });
+    }
 });
+
 
 //payments data for giropay
 
@@ -163,28 +176,54 @@ app.get('/paymentsData', (req, res) => {
 
 
 // Handle the redirect giropay
-app.get('/handleRedirect', (req, res) => {
-    const redirectResult = req.query.redirectResult; 
+app.get('/handleRedirect', async (req, res) => {
+    try {
+        const redirectResult = req.query.redirectResult; 
 
-    // Get the paymentData from the /paymentsData endpoint
-    axios.get('http://localhost:3000/paymentsData')
-    .then(response => {
+        // Get the paymentData from the /paymentsData endpoint
+        const response = await axios.get('http://localhost:3000/paymentsData');
         const paymentData = response.data.paymentData;
 
-        checkout.paymentsDetails({
+        const paymentDetails = await checkout.paymentsDetails({
             details: {
                 redirectResult: redirectResult
             },
             paymentData: paymentData
-        }).then(result => {
-            console.log(result);
-            res.send("Payment completed. Check console for result.");
-        }).catch(err => {
-            console.error(err);
-            res.send("Error occurred. Check console for details.");
         });
-    });
+
+        console.log('Payment details response:\n', paymentDetails);
+
+        const { resultCode, pspReference } = paymentDetails;
+
+        let message;
+        switch (resultCode) {
+            case 'Authorised':
+                message = 'Payment was successful :)';
+                break;
+            case 'Refused':
+                message = 'Payment was refused';
+                break;
+            case 'Error':
+                message = 'An error occurred during payment';
+                break;
+            default:
+                message = 'Payment result is unknown';
+                break;
+        }
+
+        // Append pspReference to the message
+        message += ` PSP Reference: ${pspReference}`;
+
+        res.send(message);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ error: error.message });
+    }
 });
+
+
+
 
 // iDEAL
 function testIdeal() {
@@ -201,7 +240,7 @@ function testIdeal() {
 }
 
 //run test case
-
+//no automatic redirection
 app.get('/testideal', async (req, res) => {
     try {
         const paymentsResponse = await testIdeal();
@@ -213,6 +252,26 @@ app.get('/testideal', async (req, res) => {
         res.status(500).send({ error: error.message });
     }
 });
+
+/* automatic redirect
+app.get('/testideal', async (req, res) => {
+    try {
+        const paymentsResponse = await testIdeal();
+
+        // Check if there's an action object in the response
+        if (paymentsResponse.action) {
+            // If yes, redirect the user to the URL
+            res.redirect(paymentsResponse.action.url);
+        } else {
+            // If no action object, send the response back
+            res.send(paymentsResponse);
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ error: error.message });
+    }
+});
+*/
 
 // Handle the redirect iDEAL
 
@@ -325,8 +384,14 @@ app.get('/testklarna', async (req, res) => {
     try {
         const paymentsResponse = await testKlarna();
 
-        // Send the response to client
-        res.send(paymentsResponse);
+        // Check if there's an action object in the response
+        if (paymentsResponse.action) {
+            // If yes, redirect the user to the URL
+            res.redirect(paymentsResponse.action.url);
+        } else {
+            // If no action object, send the response back
+            res.send(paymentsResponse);
+        }
     } catch (error) {
         console.error(error);
         res.status(500).send({ error: error.message });

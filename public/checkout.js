@@ -22,7 +22,7 @@ function initiatePayment(paymentMethodType) {
 
     // Map the payment method types to their respective endpoints
     const endpoints = {
-        'scheme': 'testscheme',
+        'scheme': 'cardDetails.html',
         'giropay': 'testgiropay',
         'ideal': 'testideal',
         'klarna': 'testklarna'

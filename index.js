@@ -1,11 +1,15 @@
 require('dotenv').config();
 const { Client, Config, CheckoutAPI } = require('@adyen/api-library');
 const express = require('express');
+const bodyParser = require('body-parser');
 const app = express();
 const axios = require('axios');
 const morgan = require('morgan');
 const path = require('path');
 
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
     res.set('Cache-Control', 'no-store')
@@ -57,6 +61,8 @@ app.get('/paymentmethods', async (req, res) => {
 });
 
 //card 
+
+let lastResult = "";
 async function testScheme() {
     try {
         const paymentResponse = await checkout.payments({
@@ -68,18 +74,27 @@ async function testScheme() {
                 encryptedExpiryMonth: "test_03",
                 encryptedExpiryYear: "test_2030",
                 encryptedSecurityCode: "test_737"
-                /* type: 'scheme',
-                cardNumber:'test_4111111111111111',
-                expiryMonth:'03',
-                expiryYear:'30',
-                cvc:'737',
-                holderName: 'S. Hopper' */
+                
+               /*
+                type: 'scheme',
+                encryptedCardNumber: `test_${cardDetails.cardNumber}`,
+                encryptedExpiryMonth: `test_${cardDetails.expiryMonth}`,
+                encryptedExpiryYear: `test_${cardDetails.expiryYear}`,
+                encryptedSecurityCode: `test_${cardDetails.cvc}`,
+                holderName: cardDetails.holderName
+                */
+               /*
+                type: 'scheme',
+                encryptedCardNumber: cardDetails.cardNumber,
+                encryptedExpiryMonth: cardDetails.expiryMonth,
+                encryptedExpiryYear: cardDetails.expiryYear,
+                encryptedSecurityCode: cardDetails.cvc,
+                holderName: cardDetails.holderName
+                */
             },
             amount: { currency: "EUR", value: 1000 },
             reference: "orderNo1"
         });
-
-
 
         // Extract the resultCode from the paymentResponse
         const { resultCode, pspReference } = paymentResponse;
@@ -101,26 +116,47 @@ async function testScheme() {
                 break;
         }
 
-        // Log the message and return it along with the pspReference
+        // Log the message
         console.log(`Payment result: ${message}, pspReference: ${pspReference}`);
-        return ` ${message}, pspReference: ${pspReference}`;
+        // Save the result
+        lastResult = `${message}, pspReference: ${pspReference}`;
+
+        // Return the message and pspReference
+        return lastResult;
     } catch (error) {
         console.error(error);
         throw error;
     }
 }
 
-// run test case
-
-app.get('/testScheme', async (req, res) => {
+app.get('/testScheme', (req, res) => {
+    res.send(lastResult);
+});
+/*
+app.post('/testScheme', async (req, res) => {
     try {
-        const result = await testScheme();
-        res.send(result);
+        const paymentResponse = await testScheme();
+        res.send(paymentResponse);
     } catch (error) {
         console.error(error);
         res.status(500).send({ error: error.message });
     }
 });
+*/
+
+app.post('/testScheme', async (req, res) => {
+    try {
+        const paymentResponse = await testScheme();
+        res.send(paymentResponse);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ error: error.message });
+    }
+});
+
+
+
+
 
 // Giropay
 
@@ -221,8 +257,6 @@ app.get('/handleRedirect', async (req, res) => {
         res.status(500).send({ error: error.message });
     }
 });
-
-
 
 
 // iDEAL
@@ -452,6 +486,39 @@ app.get('/cart', (req, res) => {
 
 app.get('/checkout', (req, res) => {
     res.sendFile(path.join(__dirname, '/public/checkout.html'));
+});
+
+app.get('/envData', (req, res) => {
+    // send only the necessary data, not the whole process.env
+    res.send({
+        merchantAccount: process.env.MERCHANT_ACCOUNT,
+        apiKey: process.env.API_KEY
+    });
+});
+
+app.post('/cardDetails', async (req, res) => {
+    const { cardNumber, supportedBrands } = req.body;
+
+    try {
+        const response = await axios({
+            method: 'post',
+            url: 'https://checkout-test.adyen.com/v69/cardDetails',
+            headers: {
+                'X-API-key': process.env.API_KEY,
+                'Content-Type': 'application/json'
+            },
+            data: {
+                merchantAccount: process.env.MERCHANT_ACCOUNT,
+                cardNumber: cardNumber,
+                supportedBrands: supportedBrands
+            }
+        });
+
+        res.json(response.data);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ error: error.message });
+    }
 });
 
 

@@ -24,7 +24,7 @@ function initiatePayment(paymentMethodType) {
     const endpoints = {
         'scheme': 'cardDetails.html',
         'giropay': 'testgiropay',
-        'ideal': 'testideal',
+        'ideal': 'selectIssuer.html',
         'klarna': 'testklarna'
     };
 

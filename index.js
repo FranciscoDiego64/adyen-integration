@@ -260,12 +260,12 @@ app.get('/handleRedirect', async (req, res) => {
 
 
 // iDEAL
-function testIdeal() {
+function testIdeal(issuer) {
     return checkout.payments({
         amount: { currency: "EUR", value: 1000 },
         paymentMethod: {
             type: 'ideal',
-            issuer: '1121'
+            issuer: issuer
         },
         reference: "YOUR_ORDER_NUMBER",
         merchantAccount: config.merchantAccount,
@@ -273,29 +273,15 @@ function testIdeal() {
     });
 }
 
-//run test case
-//no automatic redirection
-app.get('/testideal', async (req, res) => {
+app.post('/testideal', async (req, res) => {
     try {
-        const paymentsResponse = await testIdeal();
-
-        // Send the response to client
-        res.send(paymentsResponse);
-    } catch (error) {
-        console.error(error);
-        res.status(500).send({ error: error.message });
-    }
-});
-
-/* automatic redirect
-app.get('/testideal', async (req, res) => {
-    try {
-        const paymentsResponse = await testIdeal();
+        const { issuer } = req.body;
+        const paymentsResponse = await testIdeal(issuer);
 
         // Check if there's an action object in the response
         if (paymentsResponse.action) {
-            // If yes, redirect the user to the URL
-            res.redirect(paymentsResponse.action.url);
+            // If yes, send the URL as a response
+            res.send({url: paymentsResponse.action.url});
         } else {
             // If no action object, send the response back
             res.send(paymentsResponse);
@@ -305,7 +291,12 @@ app.get('/testideal', async (req, res) => {
         res.status(500).send({ error: error.message });
     }
 });
-*/
+
+
+
+// Handle the redirect iDEAL
+// (... The rest of your code remains the same ...)
+
 
 // Handle the redirect iDEAL
 
@@ -495,6 +486,11 @@ app.get('/envData', (req, res) => {
         apiKey: process.env.API_KEY
     });
 });
+
+app.get('/selectIssuer', (req, res) => {
+    res.sendFile(path.join(__dirname, 'selectIssuer.html'));
+});
+
 
 app.post('/cardDetails', async (req, res) => {
     const { cardNumber, supportedBrands } = req.body;

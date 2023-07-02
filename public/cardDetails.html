@@ -1,32 +1,47 @@
-
 <!DOCTYPE html>
 <html>
 <head>
   <title>Enter Card Details</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <form id="card-details-form">
-        <label for="cardNumber">Card Number:</label>
-        <input type="text" id="cardNumber" name="cardNumber" value="test_4111111111111111" required>
+    <div class="container">
+        <form id="card-details-form">
+            <div class="form-group">
+                <label for="cardNumber">Card Number:</label>
+                <input type="text" class="form-control" id="cardNumber" name="cardNumber" value="test_4111111111111111" required>
+            </div>
 
-        <label for="expiryMonth">Expiry Month:</label>
-        <input type="text" id="expiryMonth" name="expiryMonth" value="03" required>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="expiryMonth">Expiry Month:</label>
+                    <input type="text" class="form-control" id="expiryMonth" name="expiryMonth" value="03" required>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="expiryYear">Expiry Year:</label>
+                    <input type="text" class="form-control" id="expiryYear" name="expiryYear" value="30" required>
+                </div>
+            </div>
 
-        <label for="expiryYear">Expiry Year:</label>
-        <input type="text" id="expiryYear" name="expiryYear" value="30" required>
+            <div class="form-group">
+                <label for="cvc">CVC:</label>
+                <input type="text" class="form-control" id="cvc" name="cvc" value="737" required>
+            </div>
 
-        <label for="cvc">CVC:</label>
-        <input type="text" id="cvc" name="cvc" value="737" required>
+            <div class="form-group">
+                <label for="holderName">Holder Name:</label>
+                <input type="text" class="form-control" id="holderName" name="holderName" value="S. Hopper" required>
+            </div>
 
-        <label for="holderName">Holder Name:</label>
-        <input type="text" id="holderName" name="holderName" value="S. Hopper" required>
-
-        <button type="button" id="submit-card-details">Submit</button>
-    </form>
+            <button type="button" class="btn btn-primary" id="submit-card-details">Submit</button>
+        </form>
+    </div>
 
   <script src="cardDetails.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
+
 
 <!--
 <!DOCTYPE html>

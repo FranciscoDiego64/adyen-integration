@@ -7,7 +7,6 @@ const axios = require('axios');
 const morgan = require('morgan');
 const path = require('path');
 
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -16,8 +15,8 @@ app.use((req, res, next) => {
     next()
 })
 
-app.use(express.json()); // Add this line
-app.use(morgan('dev')); // logs requests
+app.use(express.json()); 
+app.use(morgan('dev')); 
 
 app.use(express.static('public'));
 
@@ -154,13 +153,9 @@ app.post('/testScheme', async (req, res) => {
     }
 });
 
-
-
-
-
 // Giropay
 
-let paymentDataStore = {};  // To store the paymentData temporarily
+let paymentDataStore = {};  // store the paymentData temporarily
 
 function testGiropay() {
     return checkout.payments({
@@ -178,6 +173,17 @@ function testGiropay() {
 
     });
 }
+
+//payments data for giropay
+
+app.post('/paymentsData', (req, res) => {
+    paymentDataStore = req.body.paymentData;
+    res.send("Payment Data Stored Successfully");
+});
+
+app.get('/paymentsData', (req, res) => {
+    res.json({ paymentData: paymentDataStore });
+});
 
 // run test case
 
@@ -197,19 +203,6 @@ app.get('/testGiropay', async (req, res) => {
         res.status(500).send({ error: error.message });
     }
 });
-
-
-//payments data for giropay
-
-app.post('/paymentsData', (req, res) => {
-    paymentDataStore = req.body.paymentData;
-    res.send("Payment Data Stored Successfully");
-});
-
-app.get('/paymentsData', (req, res) => {
-    res.json({ paymentData: paymentDataStore });
-});
-
 
 // Handle the redirect giropay
 app.get('/handleRedirect', async (req, res) => {
@@ -339,7 +332,7 @@ app.get('/handleIdealRedirect', async (req, res) => {
      }
 });
 
-// KLARNA
+// Klarna
 
 async function testKlarna() {
     return checkout.payments({
@@ -406,10 +399,8 @@ app.get('/testklarna', async (req, res) => {
 
         // Check if there's an action object in the response
         if (paymentsResponse.action) {
-            // If yes, redirect the user to the URL
             res.redirect(paymentsResponse.action.url);
         } else {
-            // If no action object, send the response back
             res.send(paymentsResponse);
         }
     } catch (error) {
@@ -510,7 +501,6 @@ app.post('/cardDetails', async (req, res) => {
     }
 });
 */
-
 
 
 app.listen(3000, () => console.log('Server listening on port 3000'));

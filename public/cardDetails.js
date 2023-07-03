@@ -19,7 +19,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 cvc: `test_${cvc}`,
                 holderName: holderName
                 
-                
                /*
                 cardNumber: cardNumber,
                 expiryMonth: expiryMonth,

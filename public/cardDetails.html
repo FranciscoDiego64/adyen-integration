@@ -6,31 +6,35 @@
 </head>
 <body>
     <div class="container">
+        <h1><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-credit-card" viewBox="0 0 16 16">
+            <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v1h14V4a1 1 0 0 0-1-1H2zm13 4H1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7z"/>
+            <path d="M2 10a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1z"/>
+          </svg></h1>
         <form id="card-details-form">
             <div class="form-group">
                 <label for="cardNumber">Card Number:</label>
-                <input type="text" class="form-control" id="cardNumber" name="cardNumber" value="test_4111111111111111" required>
+                <input type="text" class="form-control" id="cardNumber" name="cardNumber" value="" required>
             </div>
 
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="expiryMonth">Expiry Month:</label>
-                    <input type="text" class="form-control" id="expiryMonth" name="expiryMonth" value="03" required>
+                    <input type="text" class="form-control" id="expiryMonth" name="expiryMonth" value="" required>
                 </div>
                 <div class="form-group col-md-6">
                     <label for="expiryYear">Expiry Year:</label>
-                    <input type="text" class="form-control" id="expiryYear" name="expiryYear" value="30" required>
+                    <input type="text" class="form-control" id="expiryYear" name="expiryYear" value="" required>
                 </div>
             </div>
 
             <div class="form-group">
                 <label for="cvc">CVC:</label>
-                <input type="text" class="form-control" id="cvc" name="cvc" value="737" required>
+                <input type="text" class="form-control" id="cvc" name="cvc" value="" required>
             </div>
 
             <div class="form-group">
                 <label for="holderName">Holder Name:</label>
-                <input type="text" class="form-control" id="holderName" name="holderName" value="S. Hopper" required>
+                <input type="text" class="form-control" id="holderName" name="holderName" value="" required>
             </div>
 
             <button type="button" class="btn btn-primary" id="submit-card-details">Submit</button>

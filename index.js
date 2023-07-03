@@ -94,6 +94,7 @@ async function testScheme() {
             amount: { currency: "EUR", value: 1000 },
             reference: "orderNo1"
         });
+        console.log('Adyen API response:', paymentResponse);
 
         // Extract the resultCode from the paymentResponse
         const { resultCode, pspReference } = paymentResponse;
@@ -464,7 +465,6 @@ app.get('/checkout', (req, res) => {
 });
 
 app.get('/envData', (req, res) => {
-    // send only the necessary data, not the whole process.env
     res.send({
         merchantAccount: process.env.MERCHANT_ACCOUNT,
         apiKey: process.env.API_KEY
